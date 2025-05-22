@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApi } from "./ApiContext";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Returns a function to mutate some data via the API, as well as some state
@@ -7,7 +8,7 @@ import { useApi } from "./ApiContext";
  */
 export default function useMutation(method, resource, tagsToInvalidate) {
   const { request, invalidateTags } = useApi();
-
+  const navigate = useNavigate();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,6 +21,9 @@ export default function useMutation(method, resource, tagsToInvalidate) {
         method,
         body: JSON.stringify(body),
       });
+      if (!result) {
+        navigate("/activities");
+      }
       setData(result);
       invalidateTags(tagsToInvalidate);
     } catch (e) {
